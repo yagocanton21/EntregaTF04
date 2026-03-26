@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Completo | TechStore</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="container nav-content">
+            <a href="index.html" class="logo">Tech<span>Store</span></a>
+            <div class="search-bar"><input type="text" placeholder="Buscar hardware..."></div>
+            <nav>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#" onclick="filterProducts('notebook')">Notebooks</a></li>
+                    <li><a href="#" onclick="filterProducts('gpu')">Placas de Vídeo</a></li>
+                    <li><a href="#" onclick="filterProducts('hardware')">Hardware</a></li>
+                    <li><a href="#" onclick="filterProducts('all')">Ver Todos</a></li>
+                    <li><a href="/admin/login.html" style="color: var(--primary); font-weight: 700;">Admin</a></li>
+            </nav>
+            <div class="cart-link"><a href="carrinho.html">🛒 Carrinho</a></div>
+        </div>
+    </header>
+
+    <main class="container products" style="margin-top: 3rem;">
+        <h1 class="section-title">Nosso Catálogo de <span>Hardware</span></h1>
+        
+        <div class="product-grid" id="product-grid">
+            <!-- CATEGORIA: GPU (10 PRODUTOS) -->
+            <div class="product-card" data-category="gpu" onclick="addToCart('RTX 4060', 2499.00)"><div class="img-box"><img src="img/rtx4060.png" alt="GPU"></div><h3>RTX 4060</h3><p class="price">R$ 2.499,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="gpu" onclick="addToCart('RTX 4070', 4850.00)"><div class="img-box"><img src="img/rtx4070.png" alt="GPU"></div><h3>RTX 4070</h3><p class="price">R$ 4.850,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="gpu" onclick="addToCart('RTX 4090', 12900.00)"><div class="img-box"><img src="img/rtx4090.png" alt="GPU"></div><h3>RTX 4090 ULTRA</h3><p class="price">R$ 12.900,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="gpu" onclick="addToCart('RTX 4080', 8200.00)"><div class="img-box"><img src="img/rtx4070.png" alt="GPU"></div><h3>RTX 4080 Super</h3><p class="price">R$ 8.200,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="gpu" onclick="addToCart('RX 7900 XT', 6100.00)"><div class="img-box"><img src="img/rtx4090.png" alt="GPU"></div><h3>RX 7900 XT</h3><p class="price">R$ 6.100,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="gpu" onclick="addToCart('RTX 3060', 1850.00)"><div class="img-box"><img src="img/rtx4060.png" alt="GPU"></div><h3>RTX 3060 OC</h3><p class="price">R$ 1.850,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="gpu" onclick="addToCart('GTX 1650', 890.00)"><div class="img-box"><img src="img/rtx4060.png" alt="GPU"></div><h3>GTX 1650</h3><p class="price">R$ 890,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="gpu" onclick="addToCart('RTX 4070 Ti', 5900.00)"><div class="img-box"><img src="img/rtx4070.png" alt="GPU"></div><h3>RTX 4070 Ti</h3><p class="price">R$ 5.900,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="gpu" onclick="addToCart('RX 6600', 1450.00)"><div class="img-box"><img src="img/rtx4060.png" alt="GPU"></div><h3>RX 6600</h3><p class="price">R$ 1.450,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="gpu" onclick="addToCart('RX 7600', 2100.00)"><div class="img-box"><img src="img/rtx4070.png" alt="GPU"></div><h3>RX 7600</h3><p class="price">R$ 2.100,00</p><button class="btn-buy">Comprar</button></div>
+
+            <!-- CATEGORIA: NOTEBOOK (10 PRODUTOS) -->
+            <div class="product-card" data-category="notebook" onclick="addToCart('Notebook i5', 3700.00)"><div class="img-box"><img src="img/notebook.png" alt="Notebook"></div><h3>Gamer i5 16GB</h3><p class="price">R$ 3.700,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="notebook" onclick="addToCart('Gamer i7', 5400.00)"><div class="img-box"><img src="img/notebook.png" alt="Notebook"></div><h3>Gamer i7 Pro</h3><p class="price">R$ 5.400,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="notebook" onclick="addToCart('Workstation i9', 8900.00)"><div class="img-box"><img src="img/notebook_white.png" alt="Notebook"></div><h3>Workstation i9</h3><p class="price">R$ 8.900,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="notebook" onclick="addToCart('MacBook M2', 9200.00)"><div class="img-box"><img src="img/notebook_white.png" alt="Notebook"></div><h3>MacBook Air M2</h3><p class="price">R$ 9.200,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="notebook" onclick="addToCart('Ultrabook R7', 4200.00)"><div class="img-box"><img src="img/notebook.png" alt="Notebook"></div><h3>Ultrabook Ryzen 7</h3><p class="price">R$ 4.200,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="notebook" onclick="addToCart('Chromebook', 1500.00)"><div class="img-box"><img src="img/notebook.png" alt="Notebook"></div><h3>Chromebook Edu</h3><p class="price">R$ 1.500,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="notebook" onclick="addToCart('2-in-1', 3100.00)"><div class="img-box"><img src="img/notebook_white.png" alt="Notebook"></div><h3>2-in-1 Versa</h3><p class="price">R$ 3.100,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="notebook" onclick="addToCart('Legion Pro', 7500.00)"><div class="img-box"><img src="img/notebook.png" alt="Notebook"></div><h3>Legion Pro 5</h3><p class="price">R$ 7.500,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="notebook" onclick="addToCart('Alienware', 14200.00)"><div class="img-box"><img src="img/notebook_white.png" alt="Notebook"></div><h3>Alienware X15</h3><p class="price">R$ 14.200,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="notebook" onclick="addToCart('Surface Pro', 6800.00)"><div class="img-box"><img src="img/notebook_white.png" alt="Notebook"></div><h3>Surface Pro 9</h3><p class="price">R$ 6.800,00</p><button class="btn-buy">Comprar</button></div>
+
+            <!-- CATEGORIA: HARDWARE (10 PRODUTOS) -->
+            <div class="product-card" data-category="hardware" onclick="addToCart('SSD 1TB', 490.00)"><div class="img-box"><img src="img/ssd.png" alt="Hardware"></div><h3>SSD 1TB NVMe</h3><p class="price">R$ 490,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="hardware" onclick="addToCart('RAM 16GB', 650.00)"><div class="img-box"><img src="img/ram.png" alt="Hardware"></div><h3>RAM 16GB DDR5</h3><p class="price">R$ 650,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="hardware" onclick="addToCart('Placa Mãe', 2100.00)"><div class="img-box"><img src="img/motherboard.png" alt="Hardware"></div><h3>Placa Mãe Z790</h3><p class="price">R$ 2.100,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="hardware" onclick="addToCart('Water Cooler', 580.00)"><div class="img-box"><img src="img/watercooler.png" alt="Hardware"></div><h3>Water Cooler RGB</h3><p class="price">R$ 580,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="hardware" onclick="addToCart('Fonte 750W', 450.00)"><div class="img-box"><img src="img/psu.png" alt="Hardware"></div><h3>Fonte 750W 80+</h3><p class="price">R$ 450,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="hardware" onclick="addToCart('Gabinete', 380.00)"><div class="img-box"><img src="img/case.png" alt="Hardware"></div><h3>Gabinete Glass</h3><p class="price">R$ 380,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="hardware" onclick="addToCart('Monitor 2K', 1900.00)"><div class="img-box"><img src="img/monitor.png" alt="Hardware"></div><h3>Monitor 144Hz 2K</h3><p class="price">R$ 1.900,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="hardware" onclick="addToCart('Headset 7.1', 620.00)"><div class="img-box"><img src="img/headset.png" alt="Hardware"></div><h3>Headset Pro 7.1</h3><p class="price">R$ 620,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="hardware" onclick="addToCart('Teclado', 350.00)"><div class="img-box"><img src="img/keyboard.png" alt="Hardware"></div><h3>Teclado Mecânico</h3><p class="price">R$ 350,00</p><button class="btn-buy">Comprar</button></div>
+            <div class="product-card" data-category="hardware" onclick="addToCart('Mouse', 220.00)"><div class="img-box"><img src="img/mouse.png" alt="Hardware"></div><h3>Mouse Gamer 16K</h3><p class="price">R$ 220,00</p><button class="btn-buy">Comprar</button></div>
+        </div>
+    </main>
+
+    <script>
+        function addToCart(name, price) {
+            let cart = JSON.parse(localStorage.getItem('techstore_cart')) || [];
+            cart.push({ name, price });
+            localStorage.setItem('techstore_cart', JSON.stringify(cart));
+            alert(name + " adicionado ao carrinho!");
+        }
+
+        function filterProducts(category) {
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

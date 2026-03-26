@@ -1,0 +1,77 @@
+services:
+  # 1. LOAD BALANCER (NGINX)
+  nginx:
+    build: ./nginx
+    container_name: ecommerce-lb
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      backend1:
+        condition: service_healthy
+      backend2:
+        condition: service_healthy
+      backend3:
+        condition: service_healthy
+      frontend:
+        condition: service_started
+      admin:
+        condition: service_started
+    networks:
+      - ecommerce-net
+
+  # 2. BACKENDS (3 INSTÂNCIAS NGINX)
+  backend1:
+    build: ./backend
+    container_name: ecommerce-backend1
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - ecommerce-net
+
+  backend2:
+    build: ./backend
+    container_name: ecommerce-backend2
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - ecommerce-net
+
+  backend3:
+    build: ./backend
+    container_name: ecommerce-backend3
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - ecommerce-net
+
+  # 3. FRONTEND
+  frontend:
+    build: ./frontend
+    container_name: ecommerce-frontend
+    networks:
+      - ecommerce-net
+
+  # 4. ADMIN
+  admin:
+    build: ./admin
+    container_name: ecommerce-admin
+    networks:
+      - ecommerce-net
+
+networks:
+  ecommerce-net:
+    driver: bridge

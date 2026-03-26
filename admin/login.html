@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Administrativo | TechStore</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            padding: 0;
+        }
+        .login-card { 
+            background: white; 
+            padding: 3rem; 
+            border-radius: 32px; 
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-card h2 { margin-bottom: 2rem; font-weight: 800; color: var(--dark); }
+        .form-group { text-align: left; margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+        .form-group input { 
+            width: 100%; 
+            padding: 1rem; 
+            border-radius: 12px; 
+            border: 1px solid #e2e8f0; 
+            outline: none;
+            background: #f8fafc;
+        }
+        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-glow); }
+        .btn-login { 
+            width: 100%; 
+            padding: 1rem; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            cursor: pointer;
+            margin-top: 1rem;
+            box-shadow: 0 10px 15px -3px var(--primary-glow);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo" style="margin-bottom: 2rem; display: block;">Tech<span>Admin</span></div>
+        <h2>Acesso Restrito</h2>
+        <form id="login-form" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label>Usuário</label>
+                <input type="text" id="user" placeholder="Seu usuário" required>
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="pass" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-login">Entrar no Painel</button>
+        </form>
+        <a href="/" style="display: block; margin-top: 2rem; color: var(--text-muted); font-size: 0.85rem; text-decoration: none;">← Voltar para a loja</a>
+    </div>
+
+    <script>
+        function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
+
+            // Login básico simulado
+            if (pass === 'admin') {
+                sessionStorage.setItem('admin_logged', 'true');
+                window.location.href = 'dashboard.html';
+            } else {
+                alert("Senha incorreta! Dica: use 'admin'");
+            }
+        }
+    </script>
+</body>
+</html>
