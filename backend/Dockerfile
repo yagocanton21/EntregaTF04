@@ -8,7 +8,7 @@ RUN rm -rf /usr/share/nginx/html/*
 RUN printf '#!/bin/sh\n\
 echo "<h1>Nó do Backend: $(hostname)</h1>" > /usr/share/nginx/html/index.html\n\
 echo "OK" > /usr/share/nginx/html/health\n\
-echo "{\"status\": \"online\", \"type\": \"nginx-static\", \"node\": \"$(hostname)\"}" > /usr/share/nginx/html/info\n' > /docker-entrypoint.d/20-setup.sh
+echo "{\"status\": \"online\", \"type\": \"nginx-static\", \"instance_id\": \"$(hostname)\"}" > /usr/share/nginx/html/info\n' > /docker-entrypoint.d/20-setup.sh
 
 RUN chmod +x /docker-entrypoint.d/20-setup.sh
 

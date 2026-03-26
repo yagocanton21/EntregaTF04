@@ -6,10 +6,10 @@
 - **Curso:** Análise e Desenvolvimento de Sistemas
 
 ## Arquitetura
-- **Nginx (Load Balancer):** Balanceamento com SSL e rate limiting
-- **Backend:** 3 instâncias Nginx simplificadas para alta disponibilidade
-- **Frontend:** Loja virtual estática premium
-- **Admin:** Painel administrativo de gestão e monitoramento (Acesso restrito)
+- **Nginx:** Load balancer com SSL e rate limiting
+- **Backend:** 3 instâncias da API para alta disponibilidade
+- **Frontend:** Loja virtual estática
+- **Admin:** Painel administrativo
 
 ## Funcionalidades Implementadas
 - ✅ Load balancing com algoritmo least_conn
@@ -17,10 +17,9 @@
 - ✅ Failover transparente
 - ✅ SSL/TLS com certificado self-signed
 - ✅ Rate limiting para proteção
-- ✅ Logs detalhados com upstream info
+- ✅ Logs detalhados com upstream info (JSON estruturado)
 - ✅ Compressão gzip
 - ✅ Virtual hosts
-- ✅ Redirecionamento 80 para 443
 
 ## Como Executar
 
@@ -29,10 +28,10 @@
 
 ### Execução
 ```bash
-git clone [https://github.com/yagocanton21/EntregaTF04.git]
+git clone https://github.com/yagocanton21/EntregaTF04.git
 cd EntregaTF04
 
-# Subir todos os serviços (certificados são gerados automaticamente no build)
+# Subir todos os serviços (certificados já presentes em nginx/ssl/)
 docker-compose up -d --build
 
 # Verificar status
@@ -41,19 +40,17 @@ docker-compose ps
 
 ### Endpoints
 - **Frontend:** [https://localhost](https://localhost)
-- **API (Cluster Info):** [https://localhost/api/info](https://localhost/api/info)
-- **Admin:** [https://localhost/admin/login.html](https://localhost/admin/login.html)
+- **API:** [https://localhost/api/](https://localhost/api/)
+- **Admin:** [https://localhost/admin/dashboard.html](https://localhost/admin/dashboard.html)
 - **Status:** [https://localhost/nginx-status](https://localhost/nginx-status)
 - **Health:** [https://localhost/health](https://localhost/health)
 
-> [!IMPORTANT]
-> O certificado é **auto-assinado** (auto-signed). Ao acessar via navegador, clique em "Avançado" e "Prosseguir para localhost" para ignorar o aviso de segurança.
-
 ### Testes de Load Balancing
 
-# Testar distribuição de carga (verificando o nó que responde)
+```bash
+# Testar distribuição de carga
 for i in {1..10}; do
-  curl -ks https://localhost/api/info | grep "node"
+  curl -ks https://localhost/api/info | grep instance_id
 done
 
 # Simular falha de instância
@@ -61,23 +58,17 @@ docker stop ecommerce-backend1
 
 # Verificar failover
 curl -k https://localhost/api/info
+```
 
 ### Monitoramento
-- **Logs detalhados:** `docker-compose logs nginx`
-- **Métricas:** `https://localhost/nginx-status`
-- **Health checks automáticos:** A cada 30s conforme configurado no `docker-compose.yml`.
+- **Logs detalhados:** `docker logs ecommerce-lb`
+- **Métricas:** `https://localhost/status` (JSON) ou `https://localhost/nginx-status` (Stub)
+- **Dashboard:** Disponível no painel Admin com monitoramento em tempo real dos 3 nós.
 
 ### Validação
 ```bash
 # Teste de load balancing
 docker-compose up -d --build
-for i in {1..6}; do curl -k -s https://localhost/api/info; done
+for i in {1..6}; do curl -ks https://localhost/api/info; done
 docker-compose down
 ```
-
-### Dicas
-- Teste failover parando instâncias com `docker stop`.
-- Configure logs detalhados (já embutido no `nginx.conf`).
-- Implemente rate limiting adequado (10r/s configurado).
-- Use health checks em todos os serviços (configurado no compose).
-- Documente cada configuração do Nginx (comentários em `conf.d/load-balancer.conf`).

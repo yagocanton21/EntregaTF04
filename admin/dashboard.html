@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestão TechStore | Admin Pro</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/admin/css/admin.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { padding-top: 100px; background: #f8fafc; }
@@ -35,100 +36,132 @@
         </div>
     </header>
 
-    <div class="container admin-container">
-        <aside class="sidebar">
-            <ul class="sidebar-menu">
-                <li class="menu-item active" onclick="showTab('vendas')">📊 Vendas</li>
-                <li class="menu-item" onclick="showTab('catalogo')">📦 Catálogo</li>
-                <li class="menu-item" onclick="showTab('cluster')">🌐 Cluster</li>
-            </ul>
-        </aside>
-
+    <div class="container">
         <main>
-            <div id="tab-vendas" class="tab-content">
-                <div class="stats-grid">
-                    <div class="stat-box"><h4>Faturamento Total</h4><div class="val" id="total-revenue">R$ 0,00</div></div>
-                    <div class="stat-box"><h4>Total de Pedidos</h4><div class="val" id="total-orders">0</div></div>
-                    <div class="stat-box"><h4>Ticket Médio</h4><div class="val" id="avg-ticket">R$ 0,00</div></div>
+            <div id="tab-cluster" class="tab-content">
+                <div class="lb-metric-card">
+                    <h3 style="margin-bottom: 0.5rem;">Status do Load Balancer (Nginx)</h3>
+                    <div id="lb-stats" style="font-size: 0.9rem; font-family: monospace;">Carregando métricas...</div>
                 </div>
-                <nav>
-                <ul>
-                    <li><a href="/">Sair</a></li>
-                </ul>
-            </nav>
-                <div class="content-card">
-                    <h3>Vendas Realizadas (Sync Local)</h3>
-                    <table>
-                        <thead>
-                            <tr><th>ID Pedido</th><th>Data</th><th>Itens</th><th>Valor</th><th>Status</th></tr>
-                        </thead>
-                        <tbody id="sales-table-body"></tbody>
-                    </table>
+
+                <h3>Monitoramento do Cluster (Alta Disponibilidade)</h3>
+                <div class="cluster-grid">
+                    <!-- Nó 1 -->
+                    <div id="card-n1" class="node-card offline">
+                        <div class="node-header">
+                            <span class="node-id">Backend Instance 01</span>
+                            <span id="badge-n1" class="status-indicator status-offline">Offline</span>
+                        </div>
+                        <div id="metrics-n1" class="node-metrics">Aguardando resposta...</div>
+                        <div class="last-update">Sync: <span id="time-n1">-</span></div>
+                    </div>
+                    <!-- Nó 2 -->
+                    <div id="card-n2" class="node-card offline">
+                        <div class="node-header">
+                            <span class="node-id">Backend Instance 02</span>
+                            <span id="badge-n2" class="status-indicator status-offline">Offline</span>
+                        </div>
+                        <div id="metrics-n2" class="node-metrics">Aguardando resposta...</div>
+                        <div class="last-update">Sync: <span id="time-n2">-</span></div>
+                    </div>
+                    <!-- Nó 3 -->
+                    <div id="card-n3" class="node-card offline">
+                        <div class="node-header">
+                            <span class="node-id">Backend Instance 03</span>
+                            <span id="badge-n3" class="status-indicator status-offline">Offline</span>
+                        </div>
+                        <div id="metrics-n3" class="node-metrics">Aguardando resposta...</div>
+                        <div class="last-update">Sync: <span id="time-n3">-</span></div>
+                    </div>
                 </div>
-            </div>
-
-            <div id="tab-catalogo" class="tab-content" style="display: none;">
-                <div class="content-card"><h3>Gestão de Produtos</h3><p>Funcionalidade disponível no sistema de inventário.</p></div>
-            </div>
-
-            <div id="tab-cluster" class="tab-content" style="display: none;">
-                <div class="content-card"><h3>Monitor do Load Balancer</h3><button onclick="runLoadTest()" class="btn-buy" style="width: auto;">Testar Conectividade</button></div>
+                <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
+                    <button onclick="updateCluster()" class="btn-buy" style="width: auto; background: var(--dark);">Atualizar Agora</button>
+                    <button onclick="toggleAutoUpdate()" id="btn-auto" class="btn-buy" style="width: auto; background: var(--primary);">Auto-Sync: ON</button>
+                </div>
             </div>
         </main>
     </div>
 
     <script>
-        // Proteção de rota básica
-        if (sessionStorage.getItem('admin_logged') !== 'true') {
-            window.location.href = 'login.html';
-        }
+        let autoUpdateInterval = null;
 
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            document.getElementById('tab-' + tabName).style.display = 'block';
-            event.currentTarget.classList.add('active');
-        }
-
-        function loadSales() {
-            const sales = JSON.parse(localStorage.getItem('techstore_sales')) || [];
-            const tbody = document.getElementById('sales-table-body');
-            const revenueEl = document.getElementById('total-revenue');
-            const ordersEl = document.getElementById('total-orders');
-            const avgEl = document.getElementById('avg-ticket');
-
-            tbody.innerHTML = '';
-            let totalRevenue = 0;
-
-            sales.forEach(sale => {
-                totalRevenue += sale.total;
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${sale.id}</strong></td>
-                        <td>${sale.date}</td>
-                        <td>${sale.items} produto(s)</td>
-                        <td style="color: #059669;">R$ ${sale.total.toLocaleString('pt-BR')}</td>
-                        <td><span class="status-badge">Confirmado</span></td>
-                    </tr>
-                `;
-            });
-
-            revenueEl.innerText = `R$ ${totalRevenue.toLocaleString('pt-BR')}`;
-            ordersEl.innerText = sales.length;
-            avgEl.innerText = sales.length > 0 ? `R$ ${(totalRevenue / sales.length).toLocaleString('pt-BR')}` : 'R$ 0,00';
+        async function updateCluster() {
+            // Monitorar nós (Via rotas específicas no Nginx)
+            checkNode('n1', '/api/node1/info');
+            checkNode('n2', '/api/node2/info');
+            checkNode('n3', '/api/node3/info');
             
-            if(sales.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b; padding: 3rem;">Nenhuma venda registrada ainda. Realize uma compra na loja para ver os dados aqui!</td></tr>';
+            // Monitorar LB Metrics
+            try {
+                const res = await fetch('/nginx-status');
+                const text = await res.text();
+                document.getElementById('lb-stats').innerText = text;
+            } catch (e) {
+                document.getElementById('lb-stats').innerText = "Erro ao conectar com o Load Balancer";
             }
         }
 
-        // Simulação do Cluster
-        async function runLoadTest() {
-            alert("Chamando Load Balancer... Verifique o console do navegador ou os logs do Nginx.");
-            await fetch('/api/info').catch(e => console.log("Erro de rede simulado"));
+        async function checkNode(id, url) {
+            const card = document.getElementById('card-' + id);
+            const badge = document.getElementById('badge-' + id);
+            const metrics = document.getElementById('metrics-' + id);
+            const time = document.getElementById('time-' + id);
+
+            try {
+                const start = Date.now();
+                const res = await fetch(url, { cache: 'no-store' });
+                const lat = Date.now() - start;
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    card.className = 'node-card online';
+                    badge.className = 'status-indicator status-online';
+                    badge.innerText = 'Online';
+                    metrics.innerHTML = `
+                        ID: ${data.instance_id}<br>
+                        Latência: ${lat}ms<br>
+                        Status: ${data.status}
+                    `;
+                } else {
+                    throw new Error();
+                }
+            } catch (e) {
+                card.className = 'node-card offline';
+                badge.className = 'status-indicator status-offline';
+                badge.innerText = 'Offline';
+                metrics.innerText = 'Serviço indisponível ou erro de rede.';
+            }
+            time.innerText = new Date().toLocaleTimeString();
         }
 
-        window.onload = loadSales;
+        function startAutoUpdate() {
+            if(!autoUpdateInterval) {
+                autoUpdateInterval = setInterval(updateCluster, 5000);
+            }
+        }
+
+        function stopAutoUpdate() {
+            clearInterval(autoUpdateInterval);
+            autoUpdateInterval = null;
+        }
+
+        function toggleAutoUpdate() {
+            const btn = document.getElementById('btn-auto');
+            if(autoUpdateInterval) {
+                stopAutoUpdate();
+                btn.innerText = 'Auto-Sync: OFF';
+                btn.style.background = '#64748b';
+            } else {
+                startAutoUpdate();
+                btn.innerText = 'Auto-Sync: ON';
+                btn.style.background = 'var(--primary)';
+            }
+        }
+
+        window.onload = () => {
+            updateCluster();
+            startAutoUpdate();
+        };
     </script>
 </body>
 </html>
